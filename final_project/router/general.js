@@ -113,4 +113,22 @@ public_users.get('/review/:isbn',function (req, res) {
   // return res.status(300).json({message: "Yet to be implemented"});
 });
 
+
+// Get the book list available in the shop using Promises
+public_users.get('/books', function (req, res) {
+  new Promise((resolve, reject) => {
+    if (books) {
+      resolve(books);
+    } else {
+      reject("No books found");
+    }
+  })
+  .then((books) => {
+    res.status(200).json(books);
+  })
+  .catch((error) => {
+    res.status(404).json({ message: error });
+  });
+});
+
 module.exports.general = public_users;
