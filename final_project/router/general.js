@@ -61,7 +61,7 @@ public_users.get('/isbn/:isbn', async function (req, res) {
       return res.status(404).json({ message: "Book not found" });
     }
   } catch (error) {
-    return res.status(500).json({ message: "Error fetching book details", error: error.message });
+    return res.status(500).json({ message: "ISBN N0. doesn't match any of the books in our database", error: error.message });
   }
 });
 
@@ -86,41 +86,77 @@ public_users.get('/isbn/:isbn', async function (req, res) {
 //   // return res.status(300).json({message: "Yet to be implemented"});
 //  });
   
-// Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-  //Write your code here
+// Get book details based on author using async-await with axios
+public_users.get('/author/:author', async function (req, res) {
   const author = req.params.author;
-  let result = [];
-  for(let i in books) {
-    if(books[i].author === author) {
-      result.push(books[i]);
+
+  try {
+    const response = await axios.get(`http://localhost:5000/books/author/${author}`);
+    const booksByAuthor = response.data;
+
+    if (booksByAuthor.length > 0) {
+      return res.status(200).json(booksByAuthor);
+    } else {
+      return res.status(404).json({ message: "Author not found" });
     }
+  } catch (error) {
+    return res.status(500).json({ message: "Book not found!!", error: error.message });
   }
-  if(result.length > 0) {
-    return res.status(200).json(result);
-  } else {
-    return res.status(404).json({message: "Author not found"});
-  }
-  // return res.status(300).json({message: "Yet to be implemented"});
 });
 
-// Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
+// // Get book details based on author
+// public_users.get('/author/:author',function (req, res) {
+//   //Write your code here
+//   const author = req.params.author;
+//   let result = [];
+//   for(let i in books) {
+//     if(books[i].author === author) {
+//       result.push(books[i]);
+//     }
+//   }
+//   if(result.length > 0) {
+//     return res.status(200).json(result);
+//   } else {
+//     return res.status(404).json({message: "Author not found"});
+//   }
+  
+// });
+
+// Get book details based on title using async-await with axios
+public_users.get('/title/:title', async function (req, res) {
   const title = req.params.title;
-  let result = [];
-  for(let i in books) {
-    if(books[i].title === title) {
-      result.push(books[i]);
+
+  try {
+    const response = await axios.get(`http://localhost:5000/books/title/${title}`);
+    const booksByTitle = response.data;
+
+    if (booksByTitle.length > 0) {
+      return res.status(200).json(booksByTitle);
+    } else {
+      return res.status(404).json({ message: "Title not found" });
     }
+  } catch (error) {
+    return res.status(500).json({ message: "Book not found", error: error.message });
   }
-  if(result.length > 0) {
-    return res.status(200).json(result);
-  } else {
-    return res.status(404).json({message: "Title not found"});
-  }
-  // return res.status(300).json({message: "Yet to be implemented"});
 });
+
+// // Get all books based on title
+// public_users.get('/title/:title',function (req, res) {
+//   //Write your code here
+//   const title = req.params.title;
+//   let result = [];
+//   for(let i in books) {
+//     if(books[i].title === title) {
+//       result.push(books[i]);
+//     }
+//   }
+//   if(result.length > 0) {
+//     return res.status(200).json(result);
+//   } else {
+//     return res.status(404).json({message: "Title not found"});
+//   }
+  
+// });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
