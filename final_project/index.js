@@ -8,7 +8,10 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
+// const regd_users = require('./router/auth_users.js').authenticated;
+// app.use('/users', regd_users);
+
+app.use(session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
