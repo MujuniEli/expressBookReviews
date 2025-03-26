@@ -20,36 +20,71 @@ public_users.post("/register", (req,res) => {
 } else {
     return res.status(400).json({message: "Unable to register Username or password not provided"});
 }
-  // return res.status(300).json({message: "Yet to be implemented"});
+  
 });
 
-// Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  //Write your code here
-  res.send(JSON.stringify(books, null, 2));
-  // return res.status(300).json({message: "Has been implemented"});
-});
-
-// Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  const isbn = req.params.isbn;
-  let book = null;
-
-  for(let key in books) {
-    if(books[key].isbn === isbn) {
-      book = books[key];
-      break;
+// Get the book list available in the shop using Promises
+public_users.get('/books', function (req, res) {
+  new Promise((resolve, reject) => {
+    if (books) {
+      resolve(books);
+    } else {
+      reject("No books found");
     }
-}
+  })
+  .then((books) => {
+    res.status(200).json(books);
+  })
+  .catch((error) => {
+    res.status(404).json({ message: error });
+  });
+});
 
-  if(books[isbn]) {
-    return res.status(200).json(book);
-  } else {
-    return res.status(404).json({message: "Book not found"});
+// // Get the book list available in the shop
+// public_users.get('/',function (req, res) {
+//   //Write your code here
+//   res.send(JSON.stringify(books, null, 2));
+  
+// });
+
+// Get book details based on ISBN using async-await with axios
+public_users.get('/isbn/:isbn', async function (req, res) {
+  const isbn = req.params.isbn;
+
+  try {
+    const response = await axios.get(`http://localhost:5000/books/${isbn}`);
+    const book = response.data;
+
+    if (book) {
+      return res.status(200).json(book);
+    } else {
+      return res.status(404).json({ message: "Book not found" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching book details", error: error.message });
   }
-  // return res.status(300).json({message: "Yet to be implemented"});
- });
+});
+
+// // Get book details based on ISBN
+// public_users.get('/isbn/:isbn',function (req, res) {
+//   //Write your code here
+//   const isbn = req.params.isbn;
+//   let book = null;
+
+//   for(let key in books) {
+//     if(books[key].isbn === isbn) {
+//       book = books[key];
+//       break;
+//     }
+// }
+
+//   if(books[isbn]) {
+//     return res.status(200).json(book);
+//   } else {
+//     return res.status(404).json({message: "Book not found"});
+//   }
+//   // return res.status(300).json({message: "Yet to be implemented"});
+//  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
@@ -111,24 +146,6 @@ public_users.get('/review/:isbn',function (req, res) {
   }
  
   // return res.status(300).json({message: "Yet to be implemented"});
-});
-
-
-// Get the book list available in the shop using Promises
-public_users.get('/books', function (req, res) {
-  new Promise((resolve, reject) => {
-    if (books) {
-      resolve(books);
-    } else {
-      reject("No books found");
-    }
-  })
-  .then((books) => {
-    res.status(200).json(books);
-  })
-  .catch((error) => {
-    res.status(404).json({ message: error });
-  });
 });
 
 module.exports.general = public_users;
