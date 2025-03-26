@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -6,7 +7,7 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req,res) => {
-  //Write your code here
+  
   const username = req.body.username;
   const password = req.body.password;
 
@@ -42,7 +43,7 @@ public_users.get('/books', function (req, res) {
 
 // // Get the book list available in the shop
 // public_users.get('/',function (req, res) {
-//   //Write your code here
+//   
 //   res.send(JSON.stringify(books, null, 2));
   
 // });
@@ -83,7 +84,7 @@ public_users.get('/isbn/:isbn', async function (req, res) {
 //   } else {
 //     return res.status(404).json({message: "Book not found"});
 //   }
-//   // return res.status(300).json({message: "Yet to be implemented"});
+//   
 //  });
   
 // Get book details based on author using async-await with axios
